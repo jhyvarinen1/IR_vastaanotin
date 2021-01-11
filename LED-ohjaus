@@ -1,0 +1,59 @@
+#include <IRremote.h>
+
+int RECV_PIN = 11;
+int LED1 = 2;
+int LED2 = 4;
+int LED3 = 7;
+int itsONLED[] = {0,0,0,0}; // Ledien alkutila on asetettu nollaan
+
+#define code1 18563512 // Koodi saatu säätimen painikkeesta no. 1
+#define code2 18910382 // Koodi saatu säätimen painikkeesta no. 2
+#define code3 18705412 // Koodi saatu säätimen painikkeesta no. 3
+
+IRrecv irrecv(RECV_PIN);
+decode_results results;
+
+void setup()
+{
+  Serial.begin(9600);
+  irrecv.enableIRIn(); // käynnistää vastaanottimen
+  pinMode(LED1, OUTPUT);
+  pinMode(LED2, OUTPUT);
+  pinMode(LED3, OUTPUT);
+}
+
+void loop(){
+  if (irrecv.decode(&results)){
+    unsigned int value = results.value;
+    switch(value){
+      case code1:
+      if (itsONLED[1] == 1){ // Jos ensimmäinen ledi on päällä
+        digitalWrite(LED1, LOW); // Sammuta se jos painiketta painetaan
+        itsONLED[1] = 0; // Asettaa tilansa pois päältä
+      }else{ // Jos esimmäinen ledi on pois päältä
+        digitalWrite(LED1, HIGH); // Käynnistää sen, kun painiketta painetaan
+        itsONLED[1] = 1; // Asettaa tilansa päälle
+      }
+      break;
+      case code2:
+      if (itsONLED[2] == 1) {
+        digitalWrite(LED2, LOW);
+        itsONLED[2] = 0;
+      }else{
+        digitalWrite(LED2, HIGH);
+        itsONLED[2] = 1;
+      }
+      break;
+      case code3:
+      if(itsONLED[3] == 1) {
+        digitalWrite(LED3, LOW);
+        itsONLED[3] = 0;
+      }else{
+        digitalWrite(LED3, HIGH);
+        itsONLED[3] = 1;
+      }
+      break;
+      }
+    irrecv.resume(); // vastaanottaa seuraavan arvon
+  }
+}
