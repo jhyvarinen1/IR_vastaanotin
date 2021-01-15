@@ -1,2 +1,2 @@
-# IR_vastaanotin
+# Ledien IR-kaukosäätö
 Näyttö projekti
