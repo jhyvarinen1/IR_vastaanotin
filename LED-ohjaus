@@ -22,6 +22,27 @@ void setup()
   pinMode(LED3, OUTPUT);
 }
 
+const int interval = 1000;
+unsigned long vanhaAika = 0;
+
+void vilkku(){
+  unsigned long uusiAika = millis();
+  if(( uusiAika - vanhaAika ) >= interval){
+    vanhaAika = vanhaAika + interval;
+    toggle();
+  }
+}
+
+void toggle() {
+  if (itsONLED[2] == 1) {
+        digitalWrite(LED2, LOW);
+        itsONLED[2] = 0;
+      }else{
+        digitalWrite(LED2, HIGH);
+        itsONLED[2] = 1;
+      }
+}
+
 void loop(){
   if (irrecv.decode(&results)){
     unsigned int value = results.value;
@@ -36,12 +57,12 @@ void loop(){
       }
       break;
       case code2:
-      if (itsONLED[2] == 1) {
-        digitalWrite(LED2, LOW);
-        itsONLED[2] = 0;
+      if (itsONLED[0] == 1) {
+        //digitalWrite(LED2, LOW);
+        itsONLED[0] = 0;
       }else{
-        digitalWrite(LED2, HIGH);
-        itsONLED[2] = 1;
+        //digitalWrite(LED2, HIGH);
+        itsONLED[0] = 1;
       }
       break;
       case code3:
@@ -54,6 +75,9 @@ void loop(){
       }
       break;
       }
-    irrecv.resume(); // vastaanottaa seuraavan arvon
+    irrecv.resume();// vastaanottaa seuraavan arvon
+  }
+  if (itsONLED[0] == 1) {
+    vilkku();
   }
 }
